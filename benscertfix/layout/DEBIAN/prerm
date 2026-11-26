@@ -1,0 +1,10 @@
+#!/bin/sh
+# On uninstall, remove only the roots this package added. Upgrades keep them
+# (the new version's postinst updates the list).
+case "$1" in
+    remove|purge)
+        /usr/bin/benscertfix remove || true
+        killall -9 securityd 2>/dev/null || true
+        ;;
+esac
+exit 0
