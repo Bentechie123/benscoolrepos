@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>entry</key>
+    <dict>
+        <key>cell</key>
+        <string>PSLinkCell</string>
+        <key>label</key>
+        <string>Ben's Carrier</string>
+    </dict>
+    <key>title</key>
+    <string>Ben's Carrier</string>
+    <key>items</key>
+    <array>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>footerText</key>
+            <string>Replaces your carrier name, "No Service" and "Searching..." in the status bar.</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>label</key>
+            <string>Enabled</string>
+            <key>key</key>
+            <string>enabled</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.techieben.benscarrier</string>
+            <key>PostNotification</key>
+            <string>com.techieben.benscarrier/prefschanged</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Carrier Name</string>
+            <key>footerText</key>
+            <string>Leave empty to keep your real carrier name (the logo still shows).</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>label</key>
+            <string>Name</string>
+            <key>placeholder</key>
+            <string>e.g. Ben Mobile</string>
+            <key>key</key>
+            <string>carrierName</string>
+            <key>default</key>
+            <string></string>
+            <key>defaults</key>
+            <string>com.techieben.benscarrier</string>
+            <key>PostNotification</key>
+            <string>com.techieben.benscarrier/prefschanged</string>
+            <key>noAutoCorrect</key>
+            <true/>
+        </dict>
+
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Logo</string>
+            <key>footerText</key>
+            <string>Shown in front of the name. Changes show the next time the status bar updates; lock and unlock if you don't see them right away.</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSLinkListCell</string>
+            <key>detail</key>
+            <string>PSListItemsController</string>
+            <key>label</key>
+            <string>Logo</string>
+            <key>key</key>
+            <string>logo</string>
+            <key>default</key>
+            <string></string>
+            <key>defaults</key>
+            <string>com.techieben.benscarrier</string>
+            <key>PostNotification</key>
+            <string>com.techieben.benscarrier/prefschanged</string>
+            <key>validTitles</key>
+            <array>
+                <string>None</string>
+                <string>&#xF8FF; Apple</string>
+                <string>★ Star</string>
+                <string>♥ Heart</string>
+                <string>⚡ Lightning</string>
+                <string>☠ Skull</string>
+                <string>☮ Peace</string>
+                <string>✈ Plane</string>
+                <string>♫ Music</string>
+                <string>☯ Yin Yang</string>
+                <string>✿ Flower</string>
+            </array>
+            <key>validValues</key>
+            <array>
+                <string></string>
+                <string>&#xF8FF;</string>
+                <string>★</string>
+                <string>♥</string>
+                <string>⚡</string>
+                <string>☠</string>
+                <string>☮</string>
+                <string>✈</string>
+                <string>♫</string>
+                <string>☯</string>
+                <string>✿</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>

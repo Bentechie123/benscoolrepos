@@ -1,0 +1,9 @@
+Package: com.techieben.benscarrier
+Name: Ben's Carrier
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: Replace your carrier name and "No Service" with your own text and a logo. Set it up in Settings.
+Maintainer: techieben
+Author: techieben
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 5.0)
