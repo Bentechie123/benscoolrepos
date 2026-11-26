@@ -83,6 +83,7 @@
   .ico svg{width:30px; height:30px}
   .ico.disco{background:conic-gradient(from 0deg,#ff4d4d,#ffd24d,#4dff88,#4dd2ff,#7c5cff,#ff4d4d)}
   .ico.carrier{background:linear-gradient(135deg,#1fd3ff,#1456ff)}
+  .ico.certfix{background:linear-gradient(135deg,#2ee59d,#0a9b6a)}
   .card h3{margin:0; font-size:19px}
   .card .ver{font-size:12px; color:var(--muted)}
   .card p{color:#c7d6e3; margin:.4em 0 14px; font-size:15px}
@@ -118,6 +119,7 @@
     <nav>
       <a href="#packages">Packages</a>
       <a href="#add">How to add</a>
+      <a href="#certfix">Cert Fix</a>
       <a href="https://github.com/Bentechie123/benscoolrepos" target="_blank" rel="noopener">GitHub</a>
     </nav>
   </div>
@@ -187,7 +189,42 @@
           </div>
         </article>
 
+        <article class="card">
+          <div class="top">
+            <div class="ico certfix">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>
+            </div>
+            <div>
+              <h3>Ben's Cert Fix</h3>
+              <div class="ver">v1.0.0</div>
+            </div>
+          </div>
+          <p>Fixes "cannot connect" errors on websites and apps by adding the up-to-date security certificates old iOS is missing (Let's Encrypt, Amazon, Google, DigiCert and more).</p>
+          <div class="chips">
+            <span class="chip ok">iOS 5–10</span>
+            <span class="chip">27 certificates</span>
+            <span class="chip">No jailbreak option</span>
+          </div>
+        </article>
+
       </div>
+    </div>
+  </section>
+
+  <section id="certfix">
+    <div class="wrap">
+      <h2 class="h2">Not jailbroken? Fix "cannot connect" anyway</h2>
+      <p class="sub">Install the same certificates as a profile — no Cydia needed. Open this page in Safari on the device.</p>
+      <div class="steps">
+        <div class="step"><div><b>Tap the button below in Safari</b><span>It downloads the Ben's Cert Fix profile.</span></div></div>
+        <div class="step"><div><b>Tap Install</b><span>iOS will say the profile is "Unsigned" — that's normal for profiles that aren't from a company.</span></div></div>
+        <div class="step"><div><b>iOS 10.3 only: turn on trust</b><span>Settings → General → About → Certificate Trust Settings, then switch on each certificate.</span></div></div>
+      </div>
+      <div class="cta" style="justify-content:flex-start; margin-top:20px">
+        <a class="btn btn-primary" href="assets/BensCertFix.mobileconfig">Install certificate profile</a>
+        <a class="btn btn-ghost" href="https://github.com/Bentechie123/benscoolrepos/blob/main/benscertfix/ROOTS.md" target="_blank" rel="noopener">See the certificate list</a>
+      </div>
+      <p class="sub" style="margin-top:18px">To remove it later: Settings → General → Profiles (or Profiles &amp; Device Management) → Ben's Cert Fix → Remove.</p>
     </div>
   </section>
 
