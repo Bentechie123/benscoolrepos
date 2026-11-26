@@ -2,6 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>entry</key>
+    <dict>
+        <key>cell</key>
+        <string>PSLinkCell</string>
+        <key>label</key>
+        <string>Itssssdiscotime</string>
+    </dict>
     <key>items</key>
     <array>
         <dict>
@@ -9,6 +16,8 @@
             <string>PSGroupCell</string>
             <key>label</key>
             <string>Itssssdiscotime</string>
+            <key>footerText</key>
+            <string>Flashes rainbow colors over your screen. Changes apply right away, no respring needed.</string>
         </dict>
         <dict>
             <key>cell</key>
