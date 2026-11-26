@@ -3,7 +3,7 @@ Hello, this is techiebens repo!! A lot of amazing packages on here but anyways h
 1. open cydia 
 2. Go to sources
 3. press edit then add
-4. put in bentechie123.github.io/techiebenscoolrepos/
+4. put in bentechie123.github.io/benscoolrepos/
 5. Download the packages that you want
 6. Done!
 
@@ -11,4 +11,4 @@ If you have any issues with my repo please DM me o tiktok with techben71
 
 If you're lazy like me here's a direct link it'll automatically open cydia and add it
 
-cydia://url/https://cydia.saurik.com/api/share#?source=https://Bentechie123.github.io/techiebenscoolrepos
+cydia://url/https://cydia.saurik.com/api/share#?source=https://Bentechie123.github.io/benscoolrepos
