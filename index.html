@@ -1,19 +1,236 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>TechnieBen's Repo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body { background: #000; color: #fff; font-family: Arial; text-align: center; padding: 40px; }
-        h1 { color: #00ffff; }
-        .button { display: inline-block; background: #00ffff; color: #000; padding: 15px 30px; border-radius: 25px; font-weight: bold; font-size: 18px; text-decoration: none; margin: 20px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ben's Cool Repos — Cydia Source</title>
+<meta name="description" content="A Cydia repo of tweaks for jailbroken iPhones, iPods and iPads on iOS 5 to 10.">
+<link rel="icon" href="CydiaIcon.png">
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121923; --panel2:#0e141d;
+    --line:#223041; --text:#e9f1f7; --muted:#8aa0b3;
+    --cyan:#1fd3ff; --cyan-ink:#04222c; --accent:#7c5cff;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+  }
+  a{color:inherit}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 20px}
+
+  /* Background glow */
+  .bgfx{position:fixed; inset:0; z-index:-1; overflow:hidden}
+  .bgfx::before,.bgfx::after{content:""; position:absolute; width:620px; height:620px; border-radius:50%;
+    filter:blur(90px); opacity:.22}
+  .bgfx::before{background:var(--cyan); top:-220px; right:-160px}
+  .bgfx::after{background:var(--accent); bottom:-260px; left:-180px}
+
+  /* Nav */
+  header.nav{position:sticky; top:0; z-index:10; backdrop-filter:blur(10px);
+    background:rgba(11,15,20,.72); border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex; align-items:center; gap:12px; height:62px}
+  .brand{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.2px; text-decoration:none}
+  .brand img{width:34px; height:34px; border-radius:9px; box-shadow:0 0 0 1px var(--line)}
+  .nav nav{margin-left:auto; display:flex; gap:22px; font-size:14px; color:var(--muted)}
+  .nav nav a{text-decoration:none}
+  .nav nav a:hover{color:var(--text)}
+  @media(max-width:620px){ .nav nav{display:none} }
+
+  /* Hero */
+  .hero{padding:54px 0 20px; text-align:center}
+  .tag{display:inline-block; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--cyan); background:rgba(31,211,255,.1); border:1px solid rgba(31,211,255,.3);
+    padding:6px 12px; border-radius:999px; margin-bottom:18px}
+  .hero h1{font-size:clamp(34px,6vw,58px); line-height:1.05; margin:.1em 0 .25em; font-weight:900}
+  .hero h1 .grad{background:linear-gradient(90deg,var(--cyan),var(--accent));
+    -webkit-background-clip:text; background-clip:text; color:transparent}
+  .hero p.lead{color:var(--muted); font-size:clamp(16px,2.4vw,19px); max-width:620px; margin:0 auto 26px}
+  .devices{width:min(760px,92%); margin:10px auto 0; display:block; filter:drop-shadow(0 30px 60px rgba(0,0,0,.55))}
+
+  /* Buttons */
+  .cta{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin:6px 0 10px}
+  .btn{display:inline-flex; align-items:center; gap:9px; font-weight:700; font-size:16px;
+    padding:14px 24px; border-radius:14px; text-decoration:none; border:1px solid transparent; cursor:pointer}
+  .btn-primary{background:linear-gradient(180deg,#4fe0ff,#1fd3ff); color:var(--cyan-ink);
+    box-shadow:0 10px 30px rgba(31,211,255,.35)}
+  .btn-primary:hover{filter:brightness(1.06)}
+  .btn-ghost{background:var(--panel); color:var(--text); border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--cyan)}
+
+  /* URL copy row */
+  .urlrow{display:flex; align-items:center; gap:0; max-width:520px; margin:18px auto 0;
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden}
+  .urlrow code{flex:1; padding:12px 14px; font-size:14px; color:var(--cyan); text-align:left; overflow:auto; white-space:nowrap}
+  .urlrow button{border:0; background:transparent; color:var(--muted); padding:0 16px; height:44px; cursor:pointer; font-weight:700; border-left:1px solid var(--line)}
+  .urlrow button:hover{color:var(--text)}
+
+  /* Sections */
+  section{padding:46px 0}
+  .h2{font-size:28px; font-weight:800; margin:0 0 6px}
+  .sub{color:var(--muted); margin:0 0 26px}
+
+  /* Package cards */
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px}
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel2)); border:1px solid var(--line);
+    border-radius:18px; padding:22px; position:relative; overflow:hidden; transition:transform .15s,border-color .15s}
+  .card:hover{transform:translateY(-3px); border-color:rgba(31,211,255,.5)}
+  .card .top{display:flex; align-items:center; gap:14px; margin-bottom:12px}
+  .ico{width:54px; height:54px; border-radius:14px; flex:none; display:grid; place-items:center; box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+  .ico svg{width:30px; height:30px}
+  .ico.disco{background:conic-gradient(from 0deg,#ff4d4d,#ffd24d,#4dff88,#4dd2ff,#7c5cff,#ff4d4d)}
+  .ico.carrier{background:linear-gradient(135deg,#1fd3ff,#1456ff)}
+  .card h3{margin:0; font-size:19px}
+  .card .ver{font-size:12px; color:var(--muted)}
+  .card p{color:#c7d6e3; margin:.4em 0 14px; font-size:15px}
+  .chips{display:flex; flex-wrap:wrap; gap:7px}
+  .chip{font-size:12px; color:var(--muted); background:rgba(255,255,255,.04); border:1px solid var(--line);
+    padding:4px 10px; border-radius:999px}
+  .chip.ok{color:#7ff0b0; border-color:rgba(127,240,176,.3); background:rgba(127,240,176,.08)}
+
+  /* Steps */
+  .steps{counter-reset:s; display:grid; gap:14px; max-width:720px}
+  .step{display:flex; gap:16px; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px 18px}
+  .step::before{counter-increment:s; content:counter(s); flex:none; width:30px; height:30px; border-radius:9px;
+    display:grid; place-items:center; font-weight:800; color:var(--cyan-ink); background:var(--cyan)}
+  .step b{display:block}
+  .step span{color:var(--muted); font-size:14px}
+
+  footer{border-top:1px solid var(--line); padding:30px 0 50px; color:var(--muted); font-size:14px}
+  footer .wrap{display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between}
+  footer a{color:var(--cyan); text-decoration:none}
+  footer a:hover{text-decoration:underline}
+  .toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px);
+    background:var(--cyan); color:var(--cyan-ink); font-weight:700; padding:10px 18px; border-radius:12px;
+    opacity:0; pointer-events:none; transition:opacity .2s, transform .2s}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+</style>
 </head>
 <body>
-    <h1>TechnieBen's Cydia Repo</h1>
-    <p>Tap the button below on your jailbroken iPhone to add this repo to Cydia</p>
-    <a class="button" href="cydia://url/https://cydia.saurik.com/api/share#?source=https://bentechie123.github.io/benscoolrepos">Add to Cydia</a>
-    <h2>Packages</h2>
-    <p>itssssdiscotime - Turn your screen into a disco!</p>
+<div class="bgfx"></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="CydiaIcon.png" alt="Ben's Cool Repos icon"> Ben's Cool Repos</a>
+    <nav>
+      <a href="#packages">Packages</a>
+      <a href="#add">How to add</a>
+      <a href="https://github.com/Bentechie123/benscoolrepos" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<a id="top"></a>
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <span class="tag">Cydia Source · iOS 5–10</span>
+      <h1>Tweaks for your<br><span class="grad">legacy iPhone</span></h1>
+      <p class="lead">A small, hand-made Cydia repo for jailbroken iPhones, iPods and iPads. Add it once and grab the tweaks below.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="cydia://url/https://cydia.saurik.com/api/share#?source=https://bentechie123.github.io/benscoolrepos">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Add to Cydia
+        </a>
+        <a class="btn btn-ghost" href="#add">How it works</a>
+      </div>
+      <div class="urlrow">
+        <code id="repoUrl">bentechie123.github.io/benscoolrepos</code>
+        <button onclick="copyUrl()">Copy</button>
+      </div>
+      <img class="devices" src="assets/devices.png" alt="iPod touch, iPad and iPhone running iOS 6">
+    </div>
+  </section>
+
+  <section id="packages">
+    <div class="wrap">
+      <h2 class="h2">Packages</h2>
+      <p class="sub">Everything on this source. Tap <b>Add to Cydia</b> above, then install from the Sources list.</p>
+      <div class="grid">
+
+        <article class="card">
+          <div class="top">
+            <div class="ico disco">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#1a1030" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6 6 18"/></svg>
+            </div>
+            <div>
+              <h3>itssssdiscotime</h3>
+              <div class="ver">v0.0.2</div>
+            </div>
+          </div>
+          <p>Turns your whole screen into a disco — flashing rainbow colours over everything. A switch in Settings turns it on and off, no respring needed.</p>
+          <div class="chips">
+            <span class="chip ok">iOS 5–10</span>
+            <span class="chip">Settings toggle</span>
+            <span class="chip">SpringBoard</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="top">
+            <div class="ico carrier">
+              <svg viewBox="0 0 24 24" fill="#fff"><rect x="2" y="14" width="3" height="6" rx="1"/><rect x="7" y="10" width="3" height="10" rx="1"/><rect x="12" y="6" width="3" height="14" rx="1"/><rect x="17" y="2" width="3" height="18" rx="1"/></svg>
+            </div>
+            <div>
+              <h3>Ben's Carrier</h3>
+              <div class="ver">v0.0.1</div>
+            </div>
+          </div>
+          <p>Replace your carrier name — and "No Service" — with your own text and a logo (Apple, star, lightning and more). Set it all in Settings.</p>
+          <div class="chips">
+            <span class="chip ok">iOS 5–10</span>
+            <span class="chip">Custom name</span>
+            <span class="chip">10 logos</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="add" style="background:linear-gradient(180deg,transparent,rgba(31,211,255,.04))">
+    <div class="wrap">
+      <h2 class="h2">How to add the repo</h2>
+      <p class="sub">On your jailbroken device.</p>
+      <div class="steps">
+        <div class="step"><div><b>Open Cydia</b><span>The jailbreak app store on your device.</span></div></div>
+        <div class="step"><div><b>Go to Sources → Edit → Add</b><span>Top-right buttons in the Sources tab.</span></div></div>
+        <div class="step"><div><b>Enter the URL</b><span>bentechie123.github.io/benscoolrepos/</span></div></div>
+        <div class="step"><div><b>Install what you want</b><span>Open the source and tap a package to install it.</span></div></div>
+      </div>
+      <p class="sub" style="margin-top:22px">On the device itself you can also just tap the <b>Add to Cydia</b> button at the top — it opens Cydia and fills the URL in for you.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© <span id="yr"></span> Ben's Cool Repos · Made by techieben</div>
+    <div>
+      Issues? DM <a href="https://www.tiktok.com/@techben71" target="_blank" rel="noopener">@techben71</a> on TikTok ·
+      <a href="https://github.com/Bentechie123/benscoolrepos" target="_blank" rel="noopener">Source on GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  function copyUrl(){
+    var url = 'https://bentechie123.github.io/benscoolrepos/';
+    var done = function(){ var t=document.getElementById('toast'); t.classList.add('show'); setTimeout(function(){t.classList.remove('show')},1400); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(done, fallback); }
+    else { fallback(); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){}
+      document.body.removeChild(ta);
+    }
+  }
+</script>
 </body>
 </html>
