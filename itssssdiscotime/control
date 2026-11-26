@@ -6,4 +6,4 @@ Description: Turn your screen into a disco! Flashing rainbow colors take over yo
 Maintainer: techieben
 Author: techieben
 Section: Tweaks
-Depends: mobilesubstrate (>= 0.9.5000), preferenceloader
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 5.0)

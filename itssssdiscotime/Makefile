@@ -1,5 +1,6 @@
 # iOS 10.3 is the newest SDK that can still build armv7 (32-bit devices).
-TARGET := iphone:clang:10.3:7.0
+# Supports iOS 5.0 and up (the arm64 slices only ever load on iOS 7+).
+TARGET := iphone:clang:10.3:5.0
 ARCHS = armv7 arm64 arm64e
 INSTALL_TARGET_PROCESSES = SpringBoard
 
