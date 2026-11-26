@@ -1,0 +1,10 @@
+#!/bin/sh
+# Add the roots, then restart securityd so it sees them right away.
+case "$1" in
+    configure)
+        /usr/bin/benscertfix install || echo "Ben's Cert Fix: could not add the certificates (see above)."
+        killall -9 securityd 2>/dev/null || true
+        echo "Close and reopen Safari or any app that couldn't connect."
+        ;;
+esac
+exit 0

@@ -1,0 +1,9 @@
+Package: com.techieben.benscertfix
+Name: Ben's Cert Fix
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Fixes "cannot connect" errors on websites and apps by adding up-to-date root certificates (Let's Encrypt, Amazon, Google, DigiCert and more) that old iOS doesn't have.
+Maintainer: techieben
+Author: techieben
+Section: System
+Depends: firmware (>= 5.0)
