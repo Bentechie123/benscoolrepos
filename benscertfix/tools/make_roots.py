@@ -17,10 +17,12 @@ Each plist entry holds the values iOS keeps in the tsettings table of
 The trust settings (tset) value is the same empty-array plist for every row
 and is written by the device tool.
 
-With a third argument it also writes a configuration profile (.mobileconfig)
-holding the same roots, for devices that aren't jailbroken.
+With a third argument (the repo root) it also writes the site files: a
+configuration profile (assets/BensCertFix.mobileconfig), each root as a .crt
+(assets/certs/), and certfix.html, which installs them on devices that
+aren't jailbroken.
 
-Usage: make_roots.py <cacert.pem> <output project dir> [profile.mobileconfig]
+Usage: make_roots.py <cacert.pem> <output project dir> [site dir]
 """
 import base64
 import datetime
@@ -200,7 +202,9 @@ def main():
         "| Root | Expires | SHA-256 fingerprint |\n|---|---|---|\n" + "\n".join(md) + "\n",
         encoding="utf-8")
     if len(sys.argv) > 3:
-        write_profile(Path(sys.argv[3]), entries, stamp)
+        site = Path(sys.argv[3])
+        profile = write_profile(site / "assets" / "BensCertFix.mobileconfig", entries, stamp)
+        write_site_page(site, entries, profile, stamp)
 
     print(f"{len(entries)} roots written ({stamp})")
 
@@ -231,8 +235,89 @@ def write_profile(path, entries, stamp):
         "PayloadRemovalDisallowed": False,
         "PayloadContent": payloads,
     }
+    data = plistlib.dumps(profile, fmt=plistlib.FMT_XML)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(plistlib.dumps(profile, fmt=plistlib.FMT_XML))
+    path.write_bytes(data)
+    return data
+
+
+# GitHub Pages can't send the profile MIME type (it serves .mobileconfig as
+# application/octet-stream, which iOS Safari won't install). So certfix.html
+# carries the profile as a data: URI with the right type, plus each root as a
+# .crt file, which Pages serves as application/x-x509-ca-cert.
+PAGE = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ben's Cert Fix - Install</title>
+<link rel="icon" href="CydiaIcon.png">
+<style>
+  body{{margin:0;background:#0b0f14;color:#e9f1f7;font-family:-apple-system,Helvetica,Arial,sans-serif;line-height:1.5}}
+  .wrap{{max-width:720px;margin:0 auto;padding:28px 20px 60px}}
+  a{{color:#1fd3ff}}
+  h1{{font-size:28px;margin:.2em 0}}
+  .sub{{color:#8aa0b3}}
+  .btn{{display:block;text-align:center;font-weight:bold;font-size:17px;padding:15px 20px;border-radius:14px;
+       text-decoration:none;background:#1fd3ff;color:#04222c;margin:18px 0 8px}}
+  .box{{background:#121923;border:1px solid #223041;border-radius:14px;padding:16px 18px;margin:16px 0}}
+  ol{{padding-left:22px}} li{{margin:6px 0}}
+  ul.certs{{list-style:none;padding:0;margin:0}}
+  ul.certs li{{border-top:1px solid #223041;padding:10px 0;margin:0}}
+  ul.certs li:first-child{{border-top:0}}
+  .key{{color:#7ff0b0;font-size:12px;margin-left:6px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><a href="./">&larr; Ben's Cool Repos</a></p>
+  <h1>Ben's Cert Fix</h1>
+  <p class="sub">Fixes "cannot connect" on websites and apps by adding the up-to-date certificates old iOS is missing.
+  Open this page in <b>Safari</b> on the iPhone, iPod or iPad. Jailbroken? Install Ben's Cert Fix from Cydia instead.</p>
+
+  <a class="btn" href="data:application/x-apple-aspen-config;base64,{profile_b64}">Install all {count} certificates</a>
+  <div class="box">
+    <ol>
+      <li>Tap the button above and choose <b>Install</b>. iOS calls the profile "Unsigned"; that's normal for profiles that aren't from a company.</li>
+      <li><b>iOS 10.3 only:</b> go to Settings &rarr; General &rarr; About &rarr; Certificate Trust Settings and switch on the certificates.</li>
+      <li>Close and reopen Safari or any app that couldn't connect.</li>
+    </ol>
+    <p class="sub">To remove it: Settings &rarr; General &rarr; Profiles &rarr; Ben's Cert Fix &rarr; Remove.</p>
+  </div>
+
+  <h2>Button didn't work? Install them one at a time</h2>
+  <p class="sub">Tap a certificate, then Install. Start with the first one: it fixes the most sites.</p>
+  <div class="box">
+    <ul class="certs">
+{links}
+    </ul>
+  </div>
+  <p class="sub">From Mozilla's CA list as of {stamp}. Fingerprints:
+  <a href="https://github.com/Bentechie123/benscoolrepos/blob/main/benscertfix/ROOTS.md">ROOTS.md</a>.</p>
+</div>
+</body>
+</html>
+"""
+
+KEY_ROOTS = {"ISRG Root X1", "GTS Root R1", "Amazon Root CA 1", "DigiCert Global Root G2", "USERTrust RSA Certification Authority"}
+
+
+def write_site_page(site, entries, profile, stamp):
+    crt_dir = site / "assets" / "certs"
+    crt_dir.mkdir(parents=True, exist_ok=True)
+    for old in crt_dir.glob("*.crt"):
+        old.unlink()
+    # Most important first, then the rest in list order.
+    ordered = [e for e in entries if e["name"] in KEY_ROOTS] + [e for e in entries if e["name"] not in KEY_ROOTS]
+    links = []
+    for e in ordered:
+        safe = re.sub(r"[^A-Za-z0-9]+", "-", e["name"]).strip("-")
+        (crt_dir / f"{safe}.crt").write_bytes(e["data"])
+        tag = '<span class="key">most needed</span>' if e["name"] in KEY_ROOTS else ""
+        links.append(f'      <li><a href="assets/certs/{safe}.crt">{e["name"]}</a>{tag}</li>')
+    html = PAGE.format(profile_b64=base64.b64encode(profile).decode(), count=len(entries),
+                       links="\n".join(links), stamp=stamp)
+    (site / "certfix.html").write_text(html, encoding="utf-8")
 
 
 if __name__ == "__main__":
